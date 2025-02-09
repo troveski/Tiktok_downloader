@@ -17,6 +17,7 @@ def index():
                 ydl_opts = {
                     'outtmpl': 'downloads/%(id)s.%(ext)s',  # Keeps filename unique (by video ID)
                     'format': 'best',
+                    'cookies': 'instagram_cookies.txt'  # ✅ Use Instagram login cookies
                 }
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info_dict = ydl.extract_info(url, download=True)  # Extract metadata
