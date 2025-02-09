@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Video Downloader</title>
+    <title>Video Downloader</title>
 </head>
 <body>
-    <h1>Download TikTok Video</h1>
+    <h1>Download TikTok & Instagram Reels</h1>
+    
     <form method="POST">
-        <label for="url">TikTok Video URL:</label>
+        <label for="url">Enter URL:</label>
         <input type="url" id="url" name="url" required>
         <button type="submit">Download</button>
     </form>
+
+    {% if video_filename %}
+        <h2>Download Successful!</h2>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Caption:</strong> {{ caption }}</p>
+        <p><strong>File Saved As:</strong> <a href="{{ video_filename }}" download>Download Video</a></p>
+    {% endif %}
 </body>
 </html>
