@@ -6,46 +6,43 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    username = None
-    caption = None
     video_filename = None
     error_message = None
+    username = None
+    caption = None
 
     if request.method == 'POST':
         url = request.form['url']
-        print(f"\nProcessing URL: {url}")
 
         try:
-            ydl_opts = {
-                'outtmpl': 'downloads/%(id)s.%(ext)s',
-                'format': 'best',
-                'verbose': True,  # Enable verbose output for debugging
-            }
-            
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                print("Starting download...")
-                info_dict = ydl.extract_info(url, download=True)
-                print(f"Download info: {info_dict}")
-                
-                video_filename = f"downloads/{info_dict['id']}.{info_dict['ext']}"
-                username = info_dict.get('uploader', 'Unknown User')
-                caption = info_dict.get('description', 'No Caption Available')
-                print(f"Download successful: {video_filename}")
+            if 'tiktok.com' in url:
+                # Configuração para baixar vídeos do TikTok
+                ydl_opts = {
+                    'outtmpl': 'downloads/%(id)s.%(ext)s',  # Nome do arquivo pelo ID do vídeo
+                    'format': 'best'
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info_dict = ydl.extract_info(url, download=True)
+                    video_filename = f"downloads/{info_dict.get('id', 'unknown')}.{info_dict.get('ext', 'mp4')}"
+                    username = info_dict.get('uploader', 'Usuário Desconhecido')
+                    caption = info_dict.get('description', 'Sem Legenda Disponível')
+
+            else:
+                error_message = "Por favor, insira um link válido do TikTok."
 
         except Exception as e:
             error_message = str(e)
-            print(f"Error occurred: {error_message}")
 
-        return render_template('index.html',
-                            video_filename=video_filename,
-                            username=username,
-                            caption=caption,
-                            error=error_message)
+        return render_template('index.html', 
+                               video_filename=video_filename,
+                               username=username,
+                               caption=caption,
+                               error=error_message)
 
     return render_template('index.html', video_filename=None, username=None, caption=None, error=None)
 
 if __name__ == '__main__':
-    if not os.path.exists('downloads'):
-        os.makedirs('downloads')
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 10000))  # Render usa essa variável de ambiente
+    if not os.path.exists("downloads"):
+        os.makedirs("downloads")
     app.run(host='0.0.0.0', port=port, debug=True)
