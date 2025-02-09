@@ -4,7 +4,10 @@ import os
 
 app = Flask(__name__)
 
-COOKIES_PATH = os.path.join(os.getcwd(), "instagram_cookies.txt")
+COOKIES_PATH = os.environ.get("COOKIES_PATH", "instagram_cookies.txt")
+
+if not os.path.exists(COOKIES_PATH):
+    raise FileNotFoundError("Missing Instagram cookies file! Upload it to Render.")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -42,4 +45,5 @@ def index():
 if __name__ == '__main__':
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
-    app.run(host='0.0.0.0', port=5001, debug=True)  # ✅ Running on port 5001
+    port = int(os.environ.get("PORT", 10000))  # ✅ Set correct Render port
+    app.run(host='0.0.0.0', port=port, debug=True)
