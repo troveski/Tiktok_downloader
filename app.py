@@ -27,19 +27,17 @@ def index():
                     username = info_dict.get('uploader', 'Usuário Desconhecido')
                     caption = info_dict.get('description', 'Sem Legenda Disponível')
 
+                # Assim que o vídeo for baixado, redireciona para o download
+                return send_file(video_filename, as_attachment=True)
+
             else:
                 error_message = "Por favor, insira um link válido do TikTok."
 
         except Exception as e:
             error_message = str(e)
 
-        return render_template('index.html', 
-                               video_filename=video_filename,
-                               username=username,
-                               caption=caption,
-                               error=error_message)
+    return render_template('index.html', error=error_message)
 
-    return render_template('index.html', video_filename=None, username=None, caption=None, error=None)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))  # Render usa essa variável de ambiente
