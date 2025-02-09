@@ -1,24 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Downloader</title>
+    <title>Downloader de Vídeos - TikTok & Instagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        input[type="url"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .download-container {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .download-container a {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .download-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Download TikTok & Instagram Reels</h1>
+
+    <h1>Baixar Vídeos do TikTok & Instagram</h1>
     
     <form method="POST">
-        <label for="url">Enter URL:</label>
-        <input type="url" id="url" name="url" required>
-        <button type="submit">Download</button>
+        <label for="url">Cole a URL do TikTok ou Instagram:</label><br>
+        <input type="url" id="url" name="url" placeholder="Ex: https://www.tiktok.com/..." required>
+        <br>
+        <button type="submit">Baixar</button>
     </form>
 
-    {% if video_filename %}
-        <h2>Download Successful!</h2>
-        <p><strong>Username:</strong> {{ username }}</p>
-        <p><strong>Caption:</strong> {{ caption }}</p>
-        <p><strong>File Saved As:</strong> <a href="{{ video_filename }}" download>Download Video</a></p>
+    {% if error %}
+        <div class="error">
+            <p>❌ <strong>Erro:</strong> {{ error }}</p>
+        </div>
     {% endif %}
+
+    {% if video_filename %}
+        <div class="download-container">
+            <h2>✅ Download Concluído!</h2>
+            <p><strong>Usuário:</strong> {{ username }}</p>
+            <p><strong>Legenda:</strong> {{ caption }}</p>
+            <p><strong>Arquivo salvo como:</strong></p>
+            <a href="{{ video_filename }}" download>📥 Baixar vídeo</a>
+        </div>
+    {% endif %}
+
 </body>
 </html>

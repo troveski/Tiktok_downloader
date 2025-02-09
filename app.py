@@ -4,46 +4,48 @@ import os
 
 app = Flask(__name__)
 
-COOKIES_PATH = os.environ.get("COOKIES_PATH", "instagram_cookies.txt")
-
-if not os.path.exists(COOKIES_PATH):
-    raise FileNotFoundError("Missing Instagram cookies file! Upload it to Render.")
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     username = None
     caption = None
     video_filename = None
+    error_message = None
 
     if request.method == 'POST':
         url = request.form['url']
-        if 'tiktok.com' in url or 'instagram.com/reel' in url:  # ✅ Detects both TikTok & Instagram
-            try:
-                ydl_opts = {
-                    'outtmpl': 'downloads/%(id)s.%(ext)s',  # Keeps filename unique (by video ID)
-                    'format': 'best',
-                    'cookies': COOKIES_PATH  # ✅ Use Instagram login cookies
-                }
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info_dict = ydl.extract_info(url, download=True)  # Extract metadata
-                    video_filename = f"downloads/{info_dict.get('id', 'unknown')}.{info_dict.get('ext', 'mp4')}"
-                    username = info_dict.get('uploader', 'Unknown User')  # Extract username
-                    caption = info_dict.get('description', 'No Caption Available')  # Extract caption
+        print(f"\nProcessing URL: {url}")
 
-                    # Render the page with the username, caption, and filename
-                    return render_template('index.html', 
-                                           video_filename=video_filename,
-                                           username=username,
-                                           caption=caption)
-            except Exception as e:
-                return f"Error: {str(e)}"
-        else:
-            return "Invalid URL. Please enter a valid TikTok or Instagram Reel URL."
+        try:
+            ydl_opts = {
+                'outtmpl': 'downloads/%(id)s.%(ext)s',
+                'format': 'best',
+                'verbose': True,  # Enable verbose output for debugging
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                print("Starting download...")
+                info_dict = ydl.extract_info(url, download=True)
+                print(f"Download info: {info_dict}")
+                
+                video_filename = f"downloads/{info_dict['id']}.{info_dict['ext']}"
+                username = info_dict.get('uploader', 'Unknown User')
+                caption = info_dict.get('description', 'No Caption Available')
+                print(f"Download successful: {video_filename}")
 
-    return render_template('index.html', video_filename=None, username=None, caption=None)
+        except Exception as e:
+            error_message = str(e)
+            print(f"Error occurred: {error_message}")
+
+        return render_template('index.html',
+                            video_filename=video_filename,
+                            username=username,
+                            caption=caption,
+                            error=error_message)
+
+    return render_template('index.html', video_filename=None, username=None, caption=None, error=None)
 
 if __name__ == '__main__':
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
-    port = int(os.environ.get("PORT", 10000))  # ✅ Set correct Render port
+    port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, debug=True)
