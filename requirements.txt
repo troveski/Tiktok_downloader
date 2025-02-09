@@ -1,4 +1,5 @@
 Flask==2.2.3
 yt-dlp==2025.1.26
+gunicorn==20.1.0
 
 
