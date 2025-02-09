@@ -11,7 +11,7 @@ def index():
         if 'tiktok.com' in url:
             try:
                 ydl_opts = {
-                    'outtmpl': 'downloads/%(title)s.%(ext)s',
+                    'outtmpl': 'downloads/%(id)s.%(ext)s',  # Uses a short unique ID instead of the title
                     'format': 'best',
                 }
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
