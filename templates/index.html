@@ -94,8 +94,15 @@
             <p><strong>Usuário:</strong> {{ username }}</p>
             <p><strong>Legenda:</strong> {{ caption }}</p>
             <p><strong>Arquivo salvo como:</strong></p>
-            <a href="{{ video_filename }}" download>📥 Baixar vídeo</a>
+            <a id="downloadLink" href="{{ url_for('download', file=video_filename) }}" download>📥 Baixar vídeo</a>
         </div>
+
+        <script>
+            // Iniciar o download automaticamente quando a página carregar
+            window.onload = function() {
+                document.getElementById('downloadLink').click();
+            };
+        </script>
     {% endif %}
 
 </body>
