@@ -4,6 +4,8 @@ import os
 
 app = Flask(__name__)
 
+COOKIES_PATH = os.path.join(os.getcwd(), "instagram_cookies.txt")
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     username = None
@@ -17,7 +19,7 @@ def index():
                 ydl_opts = {
                     'outtmpl': 'downloads/%(id)s.%(ext)s',  # Keeps filename unique (by video ID)
                     'format': 'best',
-                    'cookies': 'instagram_cookies.txt'  # ✅ Use Instagram login cookies
+                    'cookies': COOKIES_PATH  # ✅ Use Instagram login cookies
                 }
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info_dict = ydl.extract_info(url, download=True)  # Extract metadata
